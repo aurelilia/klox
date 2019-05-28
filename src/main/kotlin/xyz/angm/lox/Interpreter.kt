@@ -34,6 +34,11 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
         evaluate(statement.expression)
     }
 
+    override fun visitIfStatement(statement: Statement.If) {
+        if (isTruthy(evaluate(statement.condition))) execute(statement.thenBranch)
+        else execute(statement.elseBranch ?: return)
+    }
+
     override fun visitPrintStatement(statement: Statement.Print) = println(stringify(evaluate(statement.expression)))
 
     override fun visitVarStatement(statement: Statement.Var) {

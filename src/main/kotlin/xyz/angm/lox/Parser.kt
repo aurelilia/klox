@@ -35,6 +35,7 @@ class Parser(private val tokens: List<Token>) {
         when {
             match(PRINT) -> printStatement()
             match(LEFT_BRACE) -> Statement.Block(block())
+            match(IF) -> ifStatement()
             else -> expressionStatement()
         }
 
@@ -44,18 +45,26 @@ class Parser(private val tokens: List<Token>) {
         return Statement.Print(value)
     }
 
-    private fun expressionStatement(): Statement {
-        val value = expression()
-        consume(SEMICOLON, "Expect ';' after expression.")
-        return Statement.Expression(value)
-    }
-
     private fun block(): List<Statement> {
         val statements = ArrayList<Statement>()
         while (!check(RIGHT_BRACE) && !isAtEnd()) statements.add(declaration()!!)
 
         consume(RIGHT_BRACE, "Expected '}' after block.")
         return statements
+    }
+
+    private fun ifStatement(): Statement {
+        consume(LEFT_PAREN, "Expected '(' after 'if'.")
+        val condition = expression()
+        consume(RIGHT_PAREN, "Expected ')' after if expression.")
+        val thenBranch = statement()
+        return Statement.If(condition, thenBranch, elseBranch = if (match(ELSE)) statement() else null)
+    }
+
+    private fun expressionStatement(): Statement {
+        val value = expression()
+        consume(SEMICOLON, "Expect ';' after expression.")
+        return Statement.Expression(value)
     }
 
     private fun expression() = assignment()

@@ -21,4 +21,9 @@ print a;
 var b = 4;
 var c;
 
-print b + c;
+print b;
+
+if (a > 100) print "big";
+else {
+    print "small";
+}

@@ -8,6 +8,7 @@ abstract class Statement {
     interface Visitor<R> {
         fun visitBlockStatement(statement: Block): R
         fun visitExpressionStatement(statement: Expression): R
+        fun visitIfStatement(statement: If): R
         fun visitPrintStatement(statement: Print): R
         fun visitVarStatement(statement: Var): R
     }
@@ -22,6 +23,14 @@ abstract class Statement {
         val expression: xyz.angm.lox.Expression
     ) : Statement() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitExpressionStatement(this)
+    }
+
+    class If(
+        val condition: xyz.angm.lox.Expression,
+        val thenBranch: Statement,
+        val elseBranch: Statement?
+    ) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitIfStatement(this)
     }
 
     class Print(
