@@ -70,7 +70,7 @@ class Parser(private val tokens: List<Token>) {
     private fun expression() = assignment()
 
     private fun assignment(): Expression {
-        val expression = ternary()
+        val expression = logicOr()
         if (match(EQUAL)) {
             val equals = previous()
             val value = assignment()
@@ -80,6 +80,10 @@ class Parser(private val tokens: List<Token>) {
         }
         return expression
     }
+
+    private fun logicOr() = generateBinaryParser(::logicAnd, OR, logical = true)
+
+    private fun logicAnd() = generateBinaryParser(::ternary, AND, logical = true)
 
     private fun ternary(): Expression {
         var expression = equality()
@@ -170,12 +174,12 @@ class Parser(private val tokens: List<Token>) {
     }
 
     // Simple helper function for generating left-associative binary operators in series
-    private fun generateBinaryParser(nextOperator: () -> Expression, vararg types: TokenType): Expression {
+    private fun generateBinaryParser(nextOperator: () -> Expression, vararg types: TokenType, logical: Boolean = false): Expression {
         var expression = nextOperator()
         while (match(*types)) {
             val operator = previous()
             val right = nextOperator()
-            expression = Expression.Binary(expression, operator, right)
+            expression = if (logical) Expression.Logical(expression, operator, right) else Expression.Binary(expression, operator, right)
         }
         return expression
     }

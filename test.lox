@@ -23,7 +23,9 @@ var c;
 
 print b;
 
-if (a > 100) print "big";
+print "hi" or 2;
+
+if (100 or true) print "big";
 else {
     print "small";
 }

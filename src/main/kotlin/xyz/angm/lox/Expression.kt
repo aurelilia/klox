@@ -10,6 +10,7 @@ abstract class Expression {
         fun visitBinaryExpression(expression: Binary): R
         fun visitGroupingExpression(expression: Grouping): R
         fun visitLiteralExpression(expression: Literal): R
+        fun visitLogicalExpression(expression: Logical): R
         fun visitUnaryExpression(expression: Unary): R
         fun visitTernaryExpression(expression: Ternary): R
         fun visitVariableExpression(expression: Variable): R
@@ -40,6 +41,14 @@ abstract class Expression {
         val value: Any?
     ) : Expression() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitLiteralExpression(this)
+    }
+
+    class Logical(
+        val left: Expression,
+        val operator: Token,
+        val right: Expression
+    ) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitLogicalExpression(this)
     }
 
     class Unary(
