@@ -7,7 +7,10 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
+private val interpreter = Interpreter()
+
 private var hadError = false
+private var hadRuntimeError = false
 
 fun main(args: Array<String>) {
     when (args.size) {
@@ -19,6 +22,7 @@ fun main(args: Array<String>) {
         }
     }
     if (hadError) exitProcess(65)
+    if (hadRuntimeError) exitProcess(70)
 }
 
 fun runPrompt() {
@@ -44,18 +48,23 @@ fun run(source: String) {
     val expression = parser.parse()
 
     if (hadError) return
-    else println(AstPrinter().print(expression!!))
+    else interpreter.interpret(expression!!)
 }
 
 object Lox {
 
     fun error(line: Int, message: String, where: String = "") {
-        println("[Line $line] Error$where: $message")
+        println("[PR][Line $line] Error$where: $message")
         hadError = true
     }
 
     fun error(token: Token, message: String) {
         if (token.type === TokenType.EOF) error(token.line, message, " at end")
         else error(token.line, message, " at '" + token.lexeme + "'")
+    }
+
+    fun runtimeError(error: RuntimeError) {
+        println("[RT][Line ${error.token.line}] ${error.message}")
+        hadRuntimeError = true
     }
 }

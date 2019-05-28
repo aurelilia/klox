@@ -1,7 +1,6 @@
 package xyz.angm.lox
 
 import xyz.angm.lox.TokenType.*
-import java.lang.RuntimeException
 
 class Parser(private val tokens: List<Token>) {
 
@@ -44,20 +43,21 @@ class Parser(private val tokens: List<Token>) {
         } else primary()
     }
 
-    private fun primary() = when {
-        match(FALSE) -> Expression.Literal(false)
-        match(TRUE) -> Expression.Literal(true)
-        match(NIL) -> Expression.Literal(null)
-        match(NUMBER, STRING) -> Expression.Literal(previous().literal)
+    private fun primary() =
+        when {
+            match(FALSE) -> Expression.Literal(false)
+            match(TRUE) -> Expression.Literal(true)
+            match(NIL) -> Expression.Literal(null)
+            match(NUMBER, STRING) -> Expression.Literal(previous().literal)
 
-        match(LEFT_PAREN) -> {
-            val expression = expression()
-            consume(RIGHT_PAREN, "Expected ')' after expression.")
-            Expression.Grouping(expression)
+            match(LEFT_PAREN) -> {
+                val expression = expression()
+                consume(RIGHT_PAREN, "Expected ')' after expression.")
+                Expression.Grouping(expression)
+            }
+
+            else -> throw error(peek(), "Expected primary expression.")
         }
-
-        else -> throw error(peek(), "Expected primary expression.")
-    }
 
     private fun match(vararg types: TokenType): Boolean {
         for (type in types) {
