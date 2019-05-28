@@ -30,7 +30,8 @@ fun main(args: Array<String>) {
             "Expression : xyz.angm.lox.Expression expression",
             "If         : xyz.angm.lox.Expression condition, Statement thenBranch, Statement? elseBranch",
             "Print      : xyz.angm.lox.Expression expression",
-            "Var        : Token name, xyz.angm.lox.Expression? initializer"
+            "Var        : Token name, xyz.angm.lox.Expression? initializer",
+            "While      : xyz.angm.lox.Expression condition, Statement body"
         )
     )
 }

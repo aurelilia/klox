@@ -47,6 +47,10 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
         environment.define(statement.name.lexeme, initValue)
     }
 
+    override fun visitWhileStatement(statement: Statement.While) {
+        while (isTruthy(evaluate(statement.condition))) execute(statement.body)
+    }
+
     // Expression Visitors
 
     override fun visitLiteralExpression(expression: Expression.Literal) = expression.value

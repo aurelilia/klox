@@ -36,6 +36,7 @@ class Parser(private val tokens: List<Token>) {
             match(PRINT) -> printStatement()
             match(LEFT_BRACE) -> Statement.Block(block())
             match(IF) -> ifStatement()
+            match(WHILE) -> whileStatement()
             else -> expressionStatement()
         }
 
@@ -56,9 +57,17 @@ class Parser(private val tokens: List<Token>) {
     private fun ifStatement(): Statement {
         consume(LEFT_PAREN, "Expected '(' after 'if'.")
         val condition = expression()
-        consume(RIGHT_PAREN, "Expected ')' after if expression.")
+        consume(RIGHT_PAREN, "Expected ')' after if condition.")
         val thenBranch = statement()
         return Statement.If(condition, thenBranch, elseBranch = if (match(ELSE)) statement() else null)
+    }
+
+    private fun whileStatement(): Statement {
+        consume(LEFT_PAREN, "Expected '(' after 'while'.")
+        val condition = expression()
+        consume(RIGHT_PAREN, "Expected ')' after while condition.")
+        val body = statement()
+        return Statement.While(condition, body)
     }
 
     private fun expressionStatement(): Statement {

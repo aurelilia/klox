@@ -11,6 +11,7 @@ abstract class Statement {
         fun visitIfStatement(statement: If): R
         fun visitPrintStatement(statement: Print): R
         fun visitVarStatement(statement: Var): R
+        fun visitWhileStatement(statement: While): R
     }
 
     class Block(
@@ -44,6 +45,13 @@ abstract class Statement {
         val initializer: xyz.angm.lox.Expression?
     ) : Statement() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitVarStatement(this)
+    }
+
+    class While(
+        val condition: xyz.angm.lox.Expression,
+        val body: Statement
+    ) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitWhileStatement(this)
     }
 
 }
