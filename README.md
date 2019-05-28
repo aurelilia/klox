@@ -9,6 +9,8 @@ Kotlin.
 - C-style ternary operator implemented
 - Strings can be concatenated with anything
 - Division by 0 causes a RuntimeError instead of NaN
+- Variables are not initialized to nil by default; access before
+  initialization leads to a RuntimeError
 
 ### Build/Run
 

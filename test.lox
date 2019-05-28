@@ -12,3 +12,13 @@ print 2 + 1;
 var a = 4 + 3;
 a = a * 6;
 print a;
+
+{
+    var a = a + 2;
+    print a;
+}
+
+var b = 4;
+var c;
+
+print b + c;

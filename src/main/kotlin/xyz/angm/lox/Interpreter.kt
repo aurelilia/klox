@@ -37,7 +37,7 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
     override fun visitPrintStatement(statement: Statement.Print) = println(stringify(evaluate(statement.expression)))
 
     override fun visitVarStatement(statement: Statement.Var) {
-        var initValue: Any? = null
+        var initValue: Any? = Environment.Unassigned
         if (statement.initializer != null) initValue = evaluate(statement.initializer)
         environment.define(statement.name.lexeme, initValue)
     }

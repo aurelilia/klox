@@ -18,9 +18,15 @@ class Environment(val enclosingEnv: Environment? = null) {
 
     fun get(name: Token): Any? {
         return when {
-            values.containsKey(name.lexeme) -> values[name.lexeme]
+            values.containsKey(name.lexeme) -> {
+                if (values[name.lexeme] == Unassigned) throw RuntimeError(name, "Variable ${name.lexeme} accessed prior to assignment!")
+                else values[name.lexeme]
+            }
             enclosingEnv != null -> enclosingEnv.get(name)
             else -> throw RuntimeError(name, "Undefined variable ${name.lexeme}.")
         }
     }
+
+    /** A simple object to signify a variable not yet assigned. */
+    object Unassigned
 }
