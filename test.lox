@@ -1,4 +1,4 @@
-// This is a file for testing the interpeter.
+// This is a file for testing the interpreter.
 
 /* Multiline!
     /* Nested, even. */
@@ -8,3 +8,7 @@
 print "one";
 print true;
 print 2 + 1;
+
+var a = 4 + 3;
+a = a * 6;
+print a;

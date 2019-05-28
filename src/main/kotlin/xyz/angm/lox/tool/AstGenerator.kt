@@ -13,18 +13,21 @@ fun main(args: Array<String>) {
 
     defineAst(
         outputDir, "Expression", asList(
-            "Binary   : Expression left, Token operator, Expression right",
-            "Grouping : Expression expression",
-            "Literal  : Any? value",
-            "Unary    : Token operator, Expression right",
-            "Ternary  : Expression condition, Expression isTrue, Expression isFalse"
+            "Assign     : Token name, Expression value",
+            "Binary     : Expression left, Token operator, Expression right",
+            "Grouping   : Expression expression",
+            "Literal    : Any? value",
+            "Unary      : Token operator, Expression right",
+            "Ternary    : Expression condition, Expression isTrue, Expression isFalse",
+            "Variable   : Token name"
         )
     )
 
     defineAst(
         outputDir, "Statement", asList(
             "Expression : xyz.angm.lox.Expression expression",
-            "Print      : xyz.angm.lox.Expression expression"
+            "Print      : xyz.angm.lox.Expression expression",
+            "Var        : Token name, xyz.angm.lox.Expression? initializer"
         )
     )
 }

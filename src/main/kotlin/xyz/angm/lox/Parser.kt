@@ -8,8 +8,27 @@ class Parser(private val tokens: List<Token>) {
 
     fun parse(): List<Statement> {
         val statements = ArrayList<Statement>()
-        while (!isAtEnd()) statements.add(statement())
+        while (!isAtEnd()) statements.add(declaration() ?: continue)
         return statements
+    }
+
+    private fun declaration(): Statement? {
+        return try {
+            if (match(VAR)) varDeclaration()
+            else statement()
+        } catch (error: ParseError) {
+            synchronize()
+            null
+        }
+    }
+
+    private fun varDeclaration(): Statement {
+        val name = consume(IDENTIFIER, "Expected variable name.")
+        var initializer: Expression? = null
+        if (match(EQUAL)) initializer = expression()
+
+        consume(SEMICOLON, "Expected ';' after variable declaration.")
+        return Statement.Var(name, initializer)
     }
 
     private fun statement() = if (match(PRINT)) printStatement() else expressionStatement()
@@ -26,7 +45,19 @@ class Parser(private val tokens: List<Token>) {
         return Statement.Expression(value)
     }
 
-    private fun expression() = ternary()
+    private fun expression() = assignment()
+
+    private fun assignment(): Expression {
+        val expression = ternary()
+        if (match(EQUAL)) {
+            val equals = previous()
+            val value = assignment()
+
+            if (expression is Expression.Variable) return Expression.Assign(expression.name, value)
+            error(equals, "Invalid assignment target.")
+        }
+        return expression
+    }
 
     private fun ternary(): Expression {
         var expression = equality()
@@ -61,6 +92,7 @@ class Parser(private val tokens: List<Token>) {
             match(TRUE) -> Expression.Literal(true)
             match(NIL) -> Expression.Literal(null)
             match(NUMBER, STRING) -> Expression.Literal(previous().literal)
+            match(IDENTIFIER) -> Expression.Variable(previous())
 
             match(LEFT_PAREN) -> {
                 val expression = expression()
@@ -104,7 +136,7 @@ class Parser(private val tokens: List<Token>) {
         return ParseError()
     }
 
-    private fun syncronize() {
+    private fun synchronize() {
         advance()
         while (!isAtEnd()) {
             if (previous().type == SEMICOLON) return

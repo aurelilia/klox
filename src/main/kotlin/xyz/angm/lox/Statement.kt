@@ -8,6 +8,7 @@ abstract class Statement {
     interface Visitor<R> {
         fun visitExpressionStatement(statement: Expression): R
         fun visitPrintStatement(statement: Print): R
+        fun visitVarStatement(statement: Var): R
     }
 
     class Expression(
@@ -20,6 +21,13 @@ abstract class Statement {
         val expression: xyz.angm.lox.Expression
     ) : Statement() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitPrintStatement(this)
+    }
+
+    class Var(
+        val name: Token,
+        val initializer: xyz.angm.lox.Expression?
+    ) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitVarStatement(this)
     }
 
 }

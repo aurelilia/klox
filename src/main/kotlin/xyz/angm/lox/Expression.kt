@@ -6,11 +6,20 @@ abstract class Expression {
     abstract fun <R> accept(visitor: Visitor<R>): R
 
     interface Visitor<R> {
+        fun visitAssignExpression(expression: Assign): R
         fun visitBinaryExpression(expression: Binary): R
         fun visitGroupingExpression(expression: Grouping): R
         fun visitLiteralExpression(expression: Literal): R
         fun visitUnaryExpression(expression: Unary): R
         fun visitTernaryExpression(expression: Ternary): R
+        fun visitVariableExpression(expression: Variable): R
+    }
+
+    class Assign(
+        val name: Token,
+        val value: Expression
+    ) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitAssignExpression(this)
     }
 
     class Binary(
@@ -46,6 +55,12 @@ abstract class Expression {
         val isFalse: Expression
     ) : Expression() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitTernaryExpression(this)
+    }
+
+    class Variable(
+        val name: Token
+    ) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitVariableExpression(this)
     }
 
 }
