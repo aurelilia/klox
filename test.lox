@@ -29,3 +29,5 @@ if (100 or true) print "big";
 else {
     print "small";
 }
+
+for (var i = 0; i < 10; i = i + 1) print i;

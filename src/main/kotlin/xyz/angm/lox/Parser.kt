@@ -1,6 +1,7 @@
 package xyz.angm.lox
 
 import xyz.angm.lox.TokenType.*
+import java.util.Arrays.asList
 
 class Parser(private val tokens: List<Token>) {
 
@@ -37,6 +38,7 @@ class Parser(private val tokens: List<Token>) {
             match(LEFT_BRACE) -> Statement.Block(block())
             match(IF) -> ifStatement()
             match(WHILE) -> whileStatement()
+            match(FOR) -> forStatement()
             else -> expressionStatement()
         }
 
@@ -68,6 +70,31 @@ class Parser(private val tokens: List<Token>) {
         consume(RIGHT_PAREN, "Expected ')' after while condition.")
         val body = statement()
         return Statement.While(condition, body)
+    }
+
+    private fun forStatement(): Statement {
+        consume(LEFT_PAREN, "Expected '(' after 'for'.")
+        val initializer = when {
+            match(SEMICOLON) -> null
+            match(VAR) -> varDeclaration()
+            else -> expressionStatement()
+        }
+
+        val condition = if (!check(SEMICOLON)) expression() else Expression.Literal(true)
+        consume(SEMICOLON, "Expect ';' after for condition.")
+        val increment = if (!check(RIGHT_PAREN)) expression() else null
+        consume(RIGHT_PAREN, "Expected ')' after for increment.")
+        var body = statement()
+
+        if (increment != null) {
+            body = Statement.Block(asList<Statement>(
+                body, Statement.Expression(increment)
+            ))
+        }
+        body = Statement.While(condition, body)
+
+        return if (initializer != null) Statement.Block(asList<Statement>(initializer, body))
+        else body
     }
 
     private fun expressionStatement(): Statement {
