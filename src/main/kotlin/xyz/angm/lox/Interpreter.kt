@@ -61,8 +61,11 @@ class Interpreter : Expression.Visitor<Any?> {
             LESS -> left <= right
             LESS_EQUAL -> left <= right
             MINUS -> left - right
-            SLASH -> left / right
             STAR -> left * right
+            SLASH -> {
+                if (right == 0.0) throw RuntimeError(operator, "Division by zero is not allowed!")
+                else left / right
+            }
             else -> throw RuntimeException("Encountered illegal state while evaluating binary expression!")
         }
     }
