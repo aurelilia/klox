@@ -16,6 +16,9 @@ class AstPrinter : Expression.Visitor<String> {
     override fun visitUnaryExpression(expression: Expression.Unary) =
         parenthesize(expression.operator.lexeme, expression.right)
 
+    override fun visitTernaryExpression(expression: Expression.Ternary) =
+        "${expression.condition.accept(this)} ? ${expression.isTrue.accept(this)} : ${expression.isFalse.accept(this)}"
+
     private fun parenthesize(name: String, vararg exprs: Expression): String {
         val builder = StringBuilder()
 

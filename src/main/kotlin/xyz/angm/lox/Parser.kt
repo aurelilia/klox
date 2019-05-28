@@ -15,7 +15,18 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    private fun expression() = equality()
+    private fun expression() = ternary()
+
+    private fun ternary(): Expression {
+        var expression = equality()
+        while (match(QUESTION)) {
+            val isTrue = equality()
+            advance()
+            val isFalse = equality()
+            expression = Expression.Ternary(expression, isTrue, isFalse)
+        }
+        return expression
+    }
 
     private fun equality() = generateBinaryParser(::comparison, BANG_EQUAL, EQUAL_EQUAL)
 

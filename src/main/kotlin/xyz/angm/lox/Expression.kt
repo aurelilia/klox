@@ -10,6 +10,7 @@ abstract class Expression {
         fun visitGroupingExpression(expression: Grouping): R
         fun visitLiteralExpression(expression: Literal): R
         fun visitUnaryExpression(expression: Unary): R
+        fun visitTernaryExpression(expression: Ternary): R
     }
 
     class Binary(
@@ -37,6 +38,14 @@ abstract class Expression {
         val right: Expression
     ) : Expression() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitUnaryExpression(this)
+    }
+
+    class Ternary(
+        val condition: Expression,
+        val isTrue: Expression,
+        val isFalse: Expression
+    ) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitTernaryExpression(this)
     }
 
 }

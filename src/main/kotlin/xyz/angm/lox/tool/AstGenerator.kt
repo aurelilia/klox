@@ -16,7 +16,8 @@ fun main(args: Array<String>) {
             "Binary   : Expression left, Token operator, Expression right",
             "Grouping : Expression expression",
             "Literal  : Any? value",
-            "Unary    : Token operator, Expression right"
+            "Unary    : Token operator, Expression right",
+            "Ternary  : Expression condition, Expression isTrue, Expression isFalse"
         )
     )
 }
