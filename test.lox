@@ -1,0 +1,8 @@
+// This is a file for testing the interpeter.
+
+/* Multiline!
+    /* Nested, even. */
+    Neat.
+*/
+
+(1 + 23 or 5)

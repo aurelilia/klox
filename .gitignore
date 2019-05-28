@@ -1,0 +1,49 @@
+/gradle
+
+## Java
+
+*.class
+*.war
+*.ear
+hs_err_pid*
+
+.idea/
+*.ipr
+*.iws
+*.iml
+com_crashlytics_export_strings.xml
+
+## Eclipse
+
+.classpath
+.project
+.metadata/
+*.tmp
+*.bak
+*.swp
+*~.nib
+.settings/
+.loadpath
+.externalToolBuilders/
+*.launch
+
+## NetBeans
+
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+
+nbactions.xml
+nb-configuration.xml
+
+## Gradle
+
+/local.properties
+.gradle/
+gradle-app.setting
+/build/
+
+## OS Specific
+.DS_Store
+Thumbs.db
