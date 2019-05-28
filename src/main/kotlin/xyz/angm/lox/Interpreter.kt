@@ -4,7 +4,16 @@ import xyz.angm.lox.TokenType.*
 
 class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
-    private var environment = Environment()
+    private val globals = Environment()
+    private var environment = globals
+
+    init {
+        globals.define("clock", object : LoxCallable {
+            override val arity = 0
+            override fun call(interpreter: Interpreter, arguments: List<Any?>) = System.currentTimeMillis() / 1000
+            override fun toString() = "<native func clock()>"
+        })
+    }
 
     fun interpret(statements: List<Statement>) {
         try {
@@ -60,6 +69,19 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
     override fun visitAssignExpression(expression: Expression.Assign) = environment.assign(expression.name, evaluate(expression.value))
 
     override fun visitGroupingExpression(expression: Expression.Grouping) = evaluate(expression.expression)
+
+    override fun visitCallExpression(expression: Expression.Call): Any? {
+        val callee = evaluate(expression.callee)
+        val arguments = ArrayList<Any?>()
+        expression.arguments.forEach { argument -> arguments.add(evaluate(argument)) }
+
+        when {
+            callee !is LoxCallable -> throw RuntimeError(expression.paren, "Only functions and classes are allowed to be called!")
+            arguments.size != callee.arity -> throw RuntimeError(expression.paren, "Expected ${callee.arity} arguments but got ${arguments.size}.")
+
+            else -> return callee.call(this, arguments)
+        }
+    }
 
     override fun visitLogicalExpression(expression: Expression.Logical): Any? {
         val left = evaluate(expression.left)

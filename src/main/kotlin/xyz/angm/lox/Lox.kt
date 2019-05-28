@@ -7,6 +7,10 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
+
+const val MAX_FUNCTION_ARGS = 16
+
+
 private val interpreter = Interpreter()
 
 private var hadError = false

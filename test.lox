@@ -5,29 +5,16 @@
     Neat.
 */
 
-print "one";
-print true;
-print 2 + 1;
+var num = (5 + 5) - 23;
 
-var a = 4 + 3;
-a = a * 6;
-print a;
-
-{
-    var a = a + 2;
-    print a;
+if (num == 0 or num > 5) {
+    print "Good";
+} else {
+    print "bad.";
 }
 
-var b = 4;
-var c;
-
-print b;
-
-print "hi" or 2;
-
-if (100 or true) print "big";
-else {
-    print "small";
+for (var i = 0; i < 10; i = i + 1) {
+    print i;
 }
 
-for (var i = 0; i < 10; i = i + 1) print i;
+print clock();

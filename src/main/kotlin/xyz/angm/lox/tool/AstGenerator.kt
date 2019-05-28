@@ -15,6 +15,7 @@ fun main(args: Array<String>) {
         outputDir, "Expression", asList(
             "Assign     : Token name, Expression value",
             "Binary     : Expression left, Token operator, Expression right",
+            "Call       : Expression callee, Token paren, List<Expression> arguments",
             "Grouping   : Expression expression",
             "Literal    : Any? value",
             "Logical    : Expression left, Token operator, Expression right",

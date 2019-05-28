@@ -8,6 +8,7 @@ abstract class Expression {
     interface Visitor<R> {
         fun visitAssignExpression(expression: Assign): R
         fun visitBinaryExpression(expression: Binary): R
+        fun visitCallExpression(expression: Call): R
         fun visitGroupingExpression(expression: Grouping): R
         fun visitLiteralExpression(expression: Literal): R
         fun visitLogicalExpression(expression: Logical): R
@@ -29,6 +30,14 @@ abstract class Expression {
         val right: Expression
     ) : Expression() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitBinaryExpression(this)
+    }
+
+    class Call(
+        val callee: Expression,
+        val paren: Token,
+        val arguments: List<Expression>
+    ) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitCallExpression(this)
     }
 
     class Grouping(
