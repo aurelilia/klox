@@ -38,7 +38,7 @@ class Interpreter : Expression.Visitor<Any?> {
             EQUAL_EQUAL -> isEqual(left, right)
             PLUS -> {
                 if (left is Double && right is Double) left + right
-                else if (left is String && right is String) left + right
+                else if (left is String || right is String) stringify(left) + stringify(right)
                 else throw RuntimeError(expression.operator, "Operands must be two numbers or strings.")
             }
             else -> {
@@ -74,7 +74,7 @@ class Interpreter : Expression.Visitor<Any?> {
             throw RuntimeError(operator, "Operand[s] must be a number.")
     }
 
-    private fun isTruthy(obj: Any?) = if (obj is Boolean) !obj else (obj != null)
+    private fun isTruthy(obj: Any?) = if (obj is Boolean) obj else (obj != null)
 
     private fun isEqual(a: Any?, b: Any?) = (a == null && b == null) || (a?.equals(b) ?: false)
 
