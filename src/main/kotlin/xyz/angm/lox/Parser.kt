@@ -6,12 +6,24 @@ class Parser(private val tokens: List<Token>) {
 
     private var current = 0
 
-    fun parse(): Expression? {
-        try {
-            return expression()
-        } catch (error: ParseError) {
-            return null
-        }
+    fun parse(): List<Statement> {
+        val statements = ArrayList<Statement>()
+        while (!isAtEnd()) statements.add(statement())
+        return statements
+    }
+
+    private fun statement() = if (match(PRINT)) printStatement() else expressionStatement()
+
+    private fun printStatement(): Statement {
+        val value = expression()
+        consume(SEMICOLON, "Expect ';' after value.")
+        return Statement.Print(value)
+    }
+
+    private fun expressionStatement(): Statement {
+        val value = expression()
+        consume(SEMICOLON, "Expect ';' after expression.")
+        return Statement.Expression(value)
     }
 
     private fun expression() = ternary()

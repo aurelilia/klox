@@ -20,6 +20,13 @@ fun main(args: Array<String>) {
             "Ternary  : Expression condition, Expression isTrue, Expression isFalse"
         )
     )
+
+    defineAst(
+        outputDir, "Statement", asList(
+            "Expression : xyz.angm.lox.Expression expression",
+            "Print      : xyz.angm.lox.Expression expression"
+        )
+    )
 }
 
 private fun defineAst(outputDir: String, baseName: String, types: List<String>) {

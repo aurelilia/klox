@@ -2,16 +2,29 @@ package xyz.angm.lox
 
 import xyz.angm.lox.TokenType.*
 
-class Interpreter : Expression.Visitor<Any?> {
+class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
-    fun interpret(expression: Expression) {
+    fun interpret(statements: List<Statement>) {
         try {
-            val value = evaluate(expression)
-            println(stringify(value))
+            statements.forEach(::execute)
         } catch (error: RuntimeError) {
             Lox.runtimeError(error)
         }
     }
+
+    private fun execute(statement: Statement) = statement.accept(this)
+
+
+    // Statement Visitors
+
+    override fun visitExpressionStatement(statement: Statement.Expression) {
+        evaluate(statement.expression)
+    }
+
+    override fun visitPrintStatement(statement: Statement.Print) = println(stringify(evaluate(statement.expression)))
+
+
+    // Expression Visitors
 
     override fun visitLiteralExpression(expression: Expression.Literal) = expression.value
 
@@ -69,6 +82,9 @@ class Interpreter : Expression.Visitor<Any?> {
             else -> throw RuntimeException("Encountered illegal state while evaluating binary expression!")
         }
     }
+
+
+    // Everything else, mostly helpers
 
     private fun evaluate(expression: Expression) = expression.accept(this)
 

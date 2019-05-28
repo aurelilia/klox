@@ -45,10 +45,10 @@ fun run(source: String) {
     val scanner = Scanner(source)
     val tokens = scanner.scanTokens()
     val parser = Parser(tokens)
-    val expression = parser.parse()
+    val statements = parser.parse()
 
     if (hadError) return
-    else interpreter.interpret(expression!!)
+    else interpreter.interpret(statements)
 }
 
 object Lox {
