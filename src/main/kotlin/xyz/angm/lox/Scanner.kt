@@ -64,7 +64,7 @@ class Scanner(private val source: String) {
         when {
             isDigit(c) -> number()
             isAlpha(c) -> identifier()
-            else -> error(line, "Unexpected character.")
+            else -> Lox.error(line, "Unexpected character.")
         }
     }
 
@@ -75,7 +75,7 @@ class Scanner(private val source: String) {
         }
 
         if (isAtEnd()) {
-            error(line, "Unterminated string.")
+            Lox.error(line, "Unterminated string.")
             return
         }
 
@@ -112,7 +112,7 @@ class Scanner(private val source: String) {
         }
 
         if (isAtEnd()) {
-            error(line, "Unterminated block comment.")
+            Lox.error(line, "Unterminated block comment.")
             return
         } else advance() // '/' of the closing '*/'
     }

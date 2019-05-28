@@ -27,7 +27,7 @@ abstract class Expression {
     }
 
     class Literal(
-        val value: Object
+        val value: Any?
     ) : Expression() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitLiteralExpression(this)
     }

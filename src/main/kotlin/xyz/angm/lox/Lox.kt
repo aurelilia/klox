@@ -40,11 +40,22 @@ fun runFile(path: String) {
 fun run(source: String) {
     val scanner = Scanner(source)
     val tokens = scanner.scanTokens()
+    val parser = Parser(tokens)
+    val expression = parser.parse()
 
-    tokens.forEach { println(it) }
+    if (hadError) return
+    else println(AstPrinter().print(expression!!))
 }
 
-fun error(line: Int, message: String, where: String = "") {
-    println("[Line $line] Error $where: $message")
-    hadError = true
+object Lox {
+
+    fun error(line: Int, message: String, where: String = "") {
+        println("[Line $line] Error$where: $message")
+        hadError = true
+    }
+
+    fun error(token: Token, message: String) {
+        if (token.type === TokenType.EOF) error(token.line, message, " at end")
+        else error(token.line, message, " at '" + token.lexeme + "'")
+    }
 }
