@@ -6,9 +6,16 @@ abstract class Statement {
     abstract fun <R> accept(visitor: Visitor<R>): R
 
     interface Visitor<R> {
+        fun visitBlockStatement(statement: Block): R
         fun visitExpressionStatement(statement: Expression): R
         fun visitPrintStatement(statement: Print): R
         fun visitVarStatement(statement: Var): R
+    }
+
+    class Block(
+        val statements: List<Statement>
+    ) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitBlockStatement(this)
     }
 
     class Expression(

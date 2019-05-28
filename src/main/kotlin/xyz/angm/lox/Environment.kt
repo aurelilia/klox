@@ -1,6 +1,6 @@
 package xyz.angm.lox
 
-class Environment {
+class Environment(val enclosingEnv: Environment? = null) {
 
     private val values = HashMap<String, Any?>()
 
@@ -8,13 +8,19 @@ class Environment {
 
     // Returns the value it was given for easier implementation in [Interpreter]
     fun assign(name: Token, value: Any?): Any? {
-        if (values.containsKey(name.lexeme)) values[name.lexeme] = value
-        else throw RuntimeError(name, "Undefined variable ${name.lexeme}.")
+        when {
+            values.containsKey(name.lexeme) -> values[name.lexeme] = value
+            enclosingEnv != null -> enclosingEnv.assign(name, value)
+            else -> throw RuntimeError(name, "Undefined variable ${name.lexeme}.")
+        }
         return value
     }
 
     fun get(name: Token): Any? {
-        if (values.containsKey(name.lexeme)) return values[name.lexeme]
-        else throw RuntimeError(name, "Undefined variable ${name.lexeme}.")
+        return when {
+            values.containsKey(name.lexeme) -> values[name.lexeme]
+            enclosingEnv != null -> enclosingEnv.get(name)
+            else -> throw RuntimeError(name, "Undefined variable ${name.lexeme}.")
+        }
     }
 }

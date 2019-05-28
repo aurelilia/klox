@@ -4,7 +4,7 @@ import xyz.angm.lox.TokenType.*
 
 class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
-    private val environment = Environment()
+    private var environment = Environment()
 
     fun interpret(statements: List<Statement>) {
         try {
@@ -16,8 +16,19 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
     private fun execute(statement: Statement) = statement.accept(this)
 
+    private fun executeBlock(statements: List<Statement>, environment: Environment) {
+        val prevEnv = this.environment
+        try {
+            this.environment = environment
+            statements.forEach(::execute)
+        } finally {
+            this.environment = prevEnv
+        }
+    }
 
     // Statement Visitors
+
+    override fun visitBlockStatement(statement: Statement.Block) = executeBlock(statement.statements, Environment(environment))
 
     override fun visitExpressionStatement(statement: Statement.Expression) {
         evaluate(statement.expression)

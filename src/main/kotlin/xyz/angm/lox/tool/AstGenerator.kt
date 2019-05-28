@@ -25,6 +25,7 @@ fun main(args: Array<String>) {
 
     defineAst(
         outputDir, "Statement", asList(
+            "Block      : List<Statement> statements",
             "Expression : xyz.angm.lox.Expression expression",
             "Print      : xyz.angm.lox.Expression expression",
             "Var        : Token name, xyz.angm.lox.Expression? initializer"
