@@ -161,7 +161,6 @@ class Scanner(private val source: String) {
             put("if", IF)
             put("nil", NIL)
             put("or", OR)
-            put("print", PRINT)
             put("return", RETURN)
             put("super", SUPER)
             put("this", THIS)

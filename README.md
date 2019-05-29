@@ -12,6 +12,8 @@ Kotlin.
 - Variables are not initialized to nil by default; access before
   initialization leads to a RuntimeError
 - Maximum function arguments are 16 instead of 8
+- 'print $obj' statement is replaced by print($obj) and printLine($obj)
+  native functions
 
 ### Build/Run
 

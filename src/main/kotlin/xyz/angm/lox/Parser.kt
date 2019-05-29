@@ -54,7 +54,6 @@ class Parser(private val tokens: List<Token>) {
 
     private fun statement() =
         when {
-            match(PRINT) -> printStatement()
             match(LEFT_BRACE) -> Statement.Block(block())
             match(IF) -> ifStatement()
             match(WHILE) -> whileStatement()
@@ -62,12 +61,6 @@ class Parser(private val tokens: List<Token>) {
             match(RETURN) -> returnStatement()
             else -> expressionStatement()
         }
-
-    private fun printStatement(): Statement {
-        val value = expression()
-        consume(SEMICOLON, "Expect ';' after value.")
-        return Statement.Print(value)
-    }
 
     private fun block(): List<Statement> {
         val statements = ArrayList<Statement>()
@@ -252,7 +245,7 @@ class Parser(private val tokens: List<Token>) {
         while (!isAtEnd()) {
             if (previous().type == SEMICOLON) return
             when (peek().type) {
-                CLASS, FUN, VAR, FOR, IF, WHILE, PRINT, RETURN -> return
+                CLASS, FUN, VAR, FOR, IF, WHILE, RETURN -> return
             }
         }
         advance()

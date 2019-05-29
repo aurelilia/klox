@@ -13,6 +13,16 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
             override fun call(interpreter: Interpreter, arguments: List<Any?>) = System.currentTimeMillis() / 1000
             override fun toString() = "<native func clock()>"
         })
+        globals.define("print", object : LoxCallable {
+            override val arity = 1
+            override fun call(interpreter: Interpreter, arguments: List<Any?>) = System.out.print(stringify(arguments[0]))
+            override fun toString() = "<native func print()>"
+        })
+        globals.define("printLine", object : LoxCallable {
+            override val arity = 1
+            override fun call(interpreter: Interpreter, arguments: List<Any?>) = System.out.println(stringify(arguments[0]))
+            override fun toString() = "<native func printLine()>"
+        })
     }
 
     fun interpret(statements: List<Statement>) {
@@ -54,8 +64,6 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
         if (isTruthy(evaluate(statement.condition))) execute(statement.thenBranch)
         else execute(statement.elseBranch ?: return)
     }
-
-    override fun visitPrintStatement(statement: Statement.Print) = println(stringify(evaluate(statement.expression)))
 
     override fun visitVarStatement(statement: Statement.Var) {
         var initValue: Any? = Environment.Unassigned

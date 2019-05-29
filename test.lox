@@ -8,21 +8,13 @@
 var num = (5 + 5) - 23;
 
 if (num == 0 or num > 5) {
-    print "Good";
+    print("Good");
 } else {
-    print "bad.";
+    print("bad.");
 }
 
 for (var i = 0; i < 10; i = i + 1) {
-    print i;
+    printLine(i);
 }
 
-print clock();
-
-fun nicerPrint(obj) {
-    print obj;
-    return true;
-}
-
-nicerPrint("Just nicer than a separate statement.");
-print nicerPrint(nil);
+print(clock());

@@ -10,7 +10,6 @@ abstract class Statement {
         fun visitExpressionStatement(statement: Expression): R
         fun visitFunctionStatement(statement: Function): R
         fun visitIfStatement(statement: If): R
-        fun visitPrintStatement(statement: Print): R
         fun visitReturnStatement(statement: Return): R
         fun visitVarStatement(statement: Var): R
         fun visitWhileStatement(statement: While): R
@@ -42,12 +41,6 @@ abstract class Statement {
         val elseBranch: Statement?
     ) : Statement() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitIfStatement(this)
-    }
-
-    class Print(
-        val expression: xyz.angm.lox.Expression
-    ) : Statement() {
-        override fun <R> accept(visitor: Visitor<R>) = visitor.visitPrintStatement(this)
     }
 
     class Return(
