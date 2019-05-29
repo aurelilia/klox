@@ -18,3 +18,11 @@ for (var i = 0; i < 10; i = i + 1) {
 }
 
 print clock();
+
+fun nicerPrint(obj) {
+    print obj;
+    return true;
+}
+
+nicerPrint("Just nicer than a separate statement.");
+print nicerPrint(nil);

@@ -15,12 +15,32 @@ class Parser(private val tokens: List<Token>) {
 
     private fun declaration(): Statement? {
         return try {
-            if (match(VAR)) varDeclaration()
-            else statement()
+            when {
+                match(FUN) -> function("function")
+                match(VAR) -> varDeclaration()
+                else -> statement()
+            }
         } catch (error: ParseError) {
             synchronize()
             null
         }
+    }
+
+    private fun function(kind: String): Statement {
+        val name = consume(IDENTIFIER, "Expected $kind name.")
+
+        consume(LEFT_PAREN, "Expected '(' after $kind name.")
+        val parameters = ArrayList<Token>()
+        if (!check(RIGHT_PAREN)) {
+            do parameters.add(consume(IDENTIFIER, "Expected parameter name."))
+            while (match(COMMA))
+            if (parameters.size > MAX_FUNCTION_ARGS) error(peek(), "Cannot have more than $MAX_FUNCTION_ARGS arguments.")
+        }
+        consume(RIGHT_PAREN, "Expected ')' after parameters.")
+
+        consume(LEFT_BRACE, "Expected '{' before $kind body.")
+        val body = block()
+        return Statement.Function(name, parameters, body)
     }
 
     private fun varDeclaration(): Statement {
@@ -39,6 +59,7 @@ class Parser(private val tokens: List<Token>) {
             match(IF) -> ifStatement()
             match(WHILE) -> whileStatement()
             match(FOR) -> forStatement()
+            match(RETURN) -> returnStatement()
             else -> expressionStatement()
         }
 
@@ -95,6 +116,13 @@ class Parser(private val tokens: List<Token>) {
 
         return if (initializer != null) Statement.Block(asList<Statement>(initializer, body))
         else body
+    }
+
+    private fun returnStatement(): Statement {
+        val keyword = previous()
+        val value = if (!check(SEMICOLON)) expression() else null
+        consume(SEMICOLON, "Expect ';' after return value.")
+        return Statement.Return(keyword, value)
     }
 
     private fun expressionStatement(): Statement {

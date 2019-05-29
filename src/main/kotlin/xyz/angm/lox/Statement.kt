@@ -8,8 +8,10 @@ abstract class Statement {
     interface Visitor<R> {
         fun visitBlockStatement(statement: Block): R
         fun visitExpressionStatement(statement: Expression): R
+        fun visitFunctionStatement(statement: Function): R
         fun visitIfStatement(statement: If): R
         fun visitPrintStatement(statement: Print): R
+        fun visitReturnStatement(statement: Return): R
         fun visitVarStatement(statement: Var): R
         fun visitWhileStatement(statement: While): R
     }
@@ -26,6 +28,14 @@ abstract class Statement {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitExpressionStatement(this)
     }
 
+    class Function(
+        val name: Token,
+        val params: List<Token>,
+        val body: List<Statement>
+    ) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitFunctionStatement(this)
+    }
+
     class If(
         val condition: xyz.angm.lox.Expression,
         val thenBranch: Statement,
@@ -38,6 +48,13 @@ abstract class Statement {
         val expression: xyz.angm.lox.Expression
     ) : Statement() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitPrintStatement(this)
+    }
+
+    class Return(
+        val keyword: Token,
+        val value: xyz.angm.lox.Expression?
+    ) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitReturnStatement(this)
     }
 
     class Var(

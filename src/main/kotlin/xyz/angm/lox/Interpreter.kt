@@ -4,7 +4,7 @@ import xyz.angm.lox.TokenType.*
 
 class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
-    private val globals = Environment()
+    val globals = Environment()
     private var environment = globals
 
     init {
@@ -25,7 +25,7 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
     private fun execute(statement: Statement) = statement.accept(this)
 
-    private fun executeBlock(statements: List<Statement>, environment: Environment) {
+    fun executeBlock(statements: List<Statement>, environment: Environment) {
         val prevEnv = this.environment
         try {
             this.environment = environment
@@ -42,6 +42,13 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
     override fun visitExpressionStatement(statement: Statement.Expression) {
         evaluate(statement.expression)
     }
+
+    override fun visitFunctionStatement(statement: Statement.Function) {
+        val function = LoxFunction(statement)
+        environment.define(statement.name.lexeme, function)
+    }
+
+    override fun visitReturnStatement(statement: Statement.Return) = throw Return(if (statement.value != null) evaluate(statement.value) else null)
 
     override fun visitIfStatement(statement: Statement.If) {
         if (isTruthy(evaluate(statement.condition))) execute(statement.thenBranch)

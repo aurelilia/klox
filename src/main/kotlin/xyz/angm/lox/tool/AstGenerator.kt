@@ -29,8 +29,10 @@ fun main(args: Array<String>) {
         outputDir, "Statement", asList(
             "Block      : List<Statement> statements",
             "Expression : xyz.angm.lox.Expression expression",
+            "Function   : Token name, List<Token> params, List<Statement> body",
             "If         : xyz.angm.lox.Expression condition, Statement thenBranch, Statement? elseBranch",
             "Print      : xyz.angm.lox.Expression expression",
+            "Return     : Token keyword, xyz.angm.lox.Expression? value",
             "Var        : Token name, xyz.angm.lox.Expression? initializer",
             "While      : xyz.angm.lox.Expression condition, Statement body"
         )
