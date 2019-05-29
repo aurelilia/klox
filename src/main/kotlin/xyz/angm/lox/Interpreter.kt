@@ -4,7 +4,7 @@ import xyz.angm.lox.TokenType.*
 
 class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
-    val globals = Environment()
+    private val globals = Environment()
     private var environment = globals
 
     init {
@@ -54,7 +54,7 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
     }
 
     override fun visitFunctionStatement(statement: Statement.Function) {
-        val function = LoxFunction(statement)
+        val function = LoxFunction(statement, environment)
         environment.define(statement.name.lexeme, function)
     }
 
