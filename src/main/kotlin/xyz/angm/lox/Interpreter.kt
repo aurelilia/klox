@@ -2,6 +2,10 @@ package xyz.angm.lox
 
 import xyz.angm.lox.TokenType.*
 
+class Return(val value: Any?) : RuntimeException(null, null, false, false)
+
+class RuntimeError(val token: Token, message: String) : java.lang.RuntimeException(message)
+
 class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
     private val globals = Environment()

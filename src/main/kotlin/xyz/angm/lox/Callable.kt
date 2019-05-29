@@ -1,5 +1,12 @@
 package xyz.angm.lox
 
+interface LoxCallable {
+
+    val arity: Int
+
+    fun call(interpreter: Interpreter, arguments: List<Any?>): Any?
+}
+
 class LoxFunction(
     private val declaration: Statement.Function,
     private val closure: Environment
