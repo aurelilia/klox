@@ -52,7 +52,13 @@ fun run(source: String) {
     val statements = parser.parse()
 
     if (hadError) return
-    else interpreter.interpret(statements)
+
+    val resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+
+    if (hadError) return
+
+    interpreter.interpret(statements)
 }
 
 object Lox {

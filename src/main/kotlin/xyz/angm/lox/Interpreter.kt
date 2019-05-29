@@ -10,6 +10,7 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
     private val globals = Environment()
     private var environment = globals
+    private val locals = HashMap<Expression, Int>()
 
     init {
         globals.define("clock", object : LoxCallable {
@@ -49,6 +50,8 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
         }
     }
 
+    fun resolve(expression: Expression, depth: Int) = locals.put(expression, depth)
+
     // Statement Visitors
 
     override fun visitBlockStatement(statement: Statement.Block) = executeBlock(statement.statements, Environment(environment))
@@ -83,9 +86,17 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
     override fun visitLiteralExpression(expression: Expression.Literal) = expression.value
 
-    override fun visitVariableExpression(expression: Expression.Variable) = environment.get(expression.name)
+    override fun visitVariableExpression(expression: Expression.Variable) = lookUpVariable(expression.name, expression)
 
-    override fun visitAssignExpression(expression: Expression.Assign) = environment.assign(expression.name, evaluate(expression.value))
+    override fun visitAssignExpression(expression: Expression.Assign): Any? {
+        val value = evaluate(expression.value)
+        val distance = locals[expression]
+
+        if (distance != null) environment.assignAt(distance, expression.name, value)
+        else globals.assign(expression.name, value)
+
+        return value
+    }
 
     override fun visitGroupingExpression(expression: Expression.Grouping) = evaluate(expression.expression)
 
@@ -169,6 +180,12 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
     private fun checkNumberOperands(operator: Token, operandLeft: Any?, operandRight: Any? = operandLeft) {
         if (!(operandLeft is Double && operandRight is Double))
             throw RuntimeError(operator, "Operand[s] must be a number.")
+    }
+
+    private fun lookUpVariable(name: Token, expression: Expression): Any? {
+        val distance = locals[expression]
+        return if (distance != null) environment.getAt(distance, name.lexeme)
+        else globals.get(name)
     }
 
     private fun isTruthy(obj: Any?) = if (obj is Boolean) obj else (obj != null)

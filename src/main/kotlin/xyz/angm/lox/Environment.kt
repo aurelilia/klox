@@ -6,15 +6,15 @@ class Environment(val enclosingEnv: Environment? = null) {
 
     fun define(name: String, value: Any?) = values.set(name, value)
 
-    // Returns the value it was given for easier implementation in [Interpreter]
-    fun assign(name: Token, value: Any?): Any? {
+    fun assign(name: Token, value: Any?) {
         when {
             values.containsKey(name.lexeme) -> values[name.lexeme] = value
             enclosingEnv != null -> enclosingEnv.assign(name, value)
             else -> throw RuntimeError(name, "Undefined variable ${name.lexeme}.")
         }
-        return value
     }
+
+    fun assignAt(distance: Int, name: Token, value: Any?) = ancestor(distance).values.set(name.lexeme, value)
 
     fun get(name: Token): Any? {
         return when {
@@ -25,6 +25,14 @@ class Environment(val enclosingEnv: Environment? = null) {
             enclosingEnv != null -> enclosingEnv.get(name)
             else -> throw RuntimeError(name, "Undefined variable ${name.lexeme}.")
         }
+    }
+
+    fun getAt(distance: Int, name: String) = ancestor(distance).values[name]
+
+    private fun ancestor(distance: Int): Environment {
+        var environment = this
+        for (i in 0 until distance) environment = environment.enclosingEnv!!
+        return environment
     }
 
     /** A simple object to signify a variable not yet assigned. */
