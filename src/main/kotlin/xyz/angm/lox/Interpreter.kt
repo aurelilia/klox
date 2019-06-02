@@ -56,6 +56,12 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
     override fun visitBlockStatement(statement: Statement.Block) = executeBlock(statement.statements, Environment(environment))
 
+    override fun visitClassStatement(statement: Statement.Class) {
+        environment.define(statement.name.lexeme, null)
+        val lClass = LoxClass(statement.name.lexeme)
+        environment.assign(statement.name, lClass)
+    }
+
     override fun visitExpressionStatement(statement: Statement.Expression) {
         evaluate(statement.expression)
     }

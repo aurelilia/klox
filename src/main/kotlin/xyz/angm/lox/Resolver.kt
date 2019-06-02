@@ -18,6 +18,11 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
         endScope()
     }
 
+    override fun visitClassStatement(statement: Statement.Class) {
+        declare(statement.name)
+        define(statement.name)
+    }
+
     override fun visitExpressionStatement(statement: Statement.Expression) = resolve(statement.expression)
 
     override fun visitIfStatement(statement: Statement.If) {
@@ -103,7 +108,7 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
 
     private fun resolveLocal(expression: Expression, name: Token) {
         for (i in scopes.size..0) {
-            if (scopes.get(i).containsKey(name.lexeme)) {
+            if (scopes[i].containsKey(name.lexeme)) {
                 interpreter.resolve(expression, scopes.size - 1 - i)
                 return
             }

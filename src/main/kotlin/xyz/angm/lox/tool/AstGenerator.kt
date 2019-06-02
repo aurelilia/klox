@@ -28,6 +28,7 @@ fun main(args: Array<String>) {
     defineAst(
         outputDir, "Statement", asList(
             "Block      : List<Statement> statements",
+            "Class      : Token name, List<Statement.Function> methods",
             "Expression : xyz.angm.lox.Expression expression",
             "Function   : Token name, List<Token> params, List<Statement> body",
             "If         : xyz.angm.lox.Expression condition, Statement thenBranch, Statement? elseBranch",

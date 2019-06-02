@@ -16,6 +16,7 @@ class Parser(private val tokens: List<Token>) {
     private fun declaration(): Statement? {
         return try {
             when {
+                match(CLASS) -> classDeclaration()
                 match(FUN) -> function("function")
                 match(VAR) -> varDeclaration()
                 else -> statement()
@@ -26,7 +27,18 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    private fun function(kind: String): Statement {
+    private fun classDeclaration(): Statement.Class {
+        val name = consume(IDENTIFIER, "Expected class name.")
+        consume(LEFT_BRACE, "Expected '{' before class body.")
+
+        val methods = ArrayList<Statement.Function>()
+        while (!check(RIGHT_BRACE) && !isAtEnd()) methods.add(function("method"))
+        consume(RIGHT_BRACE, "Expected '}' after class body.")
+
+        return Statement.Class(name, methods)
+    }
+
+    private fun function(kind: String): Statement.Function {
         val name = consume(IDENTIFIER, "Expected $kind name.")
 
         consume(LEFT_PAREN, "Expected '(' after $kind name.")

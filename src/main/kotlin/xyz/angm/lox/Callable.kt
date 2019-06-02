@@ -28,3 +28,16 @@ class LoxFunction(
 
     override fun toString() = "<func ${declaration.name.lexeme}>"
 }
+
+class LoxClass(val name: String) : LoxCallable {
+
+    override val arity = 0
+
+    override fun call(interpreter: Interpreter, arguments: List<Any?>) = LoxInstance(this)
+
+    override fun toString() = name
+}
+
+class LoxInstance(private val lClass: LoxClass) {
+    override fun toString() = "${lClass.name} instance"
+}
