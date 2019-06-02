@@ -24,6 +24,7 @@ abstract class Statement {
 
     class Class(
         val name: Token,
+        val superclass: xyz.angm.lox.Expression.Variable?,
         val methods: List<Statement.Function>
     ) : Statement() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitClassStatement(this)

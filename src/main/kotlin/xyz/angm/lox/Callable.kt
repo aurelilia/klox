@@ -39,7 +39,11 @@ class LoxFunction(
     override fun toString() = "<func ${declaration.name.lexeme}>"
 }
 
-class LoxClass(val name: String, private val methods: MutableMap<String, LoxFunction>) : LoxCallable {
+class LoxClass(
+    val name: String,
+    val superclass: LoxClass?,
+    private val methods: MutableMap<String, LoxFunction>
+) : LoxCallable {
 
     override val arity = findMethod("init")?.arity ?: 0
 
@@ -49,7 +53,7 @@ class LoxClass(val name: String, private val methods: MutableMap<String, LoxFunc
         return instance
     }
 
-    fun findMethod(name: String) = if (methods.containsKey(name)) methods[name] else null
+    fun findMethod(name: String): LoxFunction? = if (methods.containsKey(name)) methods[name] else superclass?.findMethod(name)
 
     override fun toString() = name
 }

@@ -57,12 +57,15 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
     override fun visitBlockStatement(statement: Statement.Block) = executeBlock(statement.statements, Environment(environment))
 
     override fun visitClassStatement(statement: Statement.Class) {
+        val superclass = if (statement.superclass != null) evaluate(statement.superclass) else null
+        if (superclass != null && superclass !is LoxClass) throw RuntimeError(statement.superclass!!.name, "Superclass must be a class.")
+
         environment.define(statement.name.lexeme, null)
 
         val methods = HashMap<String, LoxFunction>()
         statement.methods.forEach { methods[it.name.lexeme] = LoxFunction(it, environment, it.name.lexeme == "init") }
 
-        val lClass = LoxClass(statement.name.lexeme, methods)
+        val lClass = LoxClass(statement.name.lexeme, superclass as? LoxClass, methods)
         environment.assign(statement.name, lClass)
     }
 

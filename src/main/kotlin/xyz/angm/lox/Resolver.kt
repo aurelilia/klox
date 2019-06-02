@@ -8,7 +8,7 @@ enum class FunctionType {
 }
 
 enum class ClassType {
-    NONE, CLASS
+    NONE, CLASS, SUBCLASS
 }
 
 class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>, Statement.Visitor<Unit> {
@@ -28,16 +28,27 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
         currentClass = ClassType.CLASS
 
         declare(statement.name)
+        define(statement.name)
+
+        if (statement.name.lexeme == statement.superclass?.name?.lexeme) Lox.error(statement.name, "A class cannot inherit itself.")
+        if (statement.superclass != null) {
+            currentClass = ClassType.SUBCLASS
+            resolve(statement.superclass)
+
+            beginScope()
+            scopes.peek()["super"] = true
+        }
+
         beginScope()
         scopes.peek()["this"] = true
 
-        define(statement.name)
         statement.methods.forEach {
             val declaration = if (it.name.lexeme == "init") FunctionType.INITIALIZER else FunctionType.METHOD
             resolveFunction(it, declaration)
         }
 
         endScope()
+        if (statement.superclass != null) endScope()
         currentClass = enclosingClass
     }
 

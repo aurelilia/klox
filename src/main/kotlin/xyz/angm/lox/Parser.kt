@@ -29,13 +29,15 @@ class Parser(private val tokens: List<Token>) {
 
     private fun classDeclaration(): Statement.Class {
         val name = consume(IDENTIFIER, "Expected class name.")
+        val superclass = if (match(LESS)) Expression.Variable(consume(IDENTIFIER, "Expected name of superclass.")) else null
+
         consume(LEFT_BRACE, "Expected '{' before class body.")
 
         val methods = ArrayList<Statement.Function>()
         while (!check(RIGHT_BRACE) && !isAtEnd()) methods.add(function("method"))
         consume(RIGHT_BRACE, "Expected '}' after class body.")
 
-        return Statement.Class(name, methods)
+        return Statement.Class(name, superclass, methods)
     }
 
     private fun function(kind: String): Statement.Function {

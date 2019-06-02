@@ -8,16 +8,24 @@
 var num = (5 + 5) - 23;
 
 if (num == 0 or num > 5) {
-    print("Good");
+    printLine("Good");
 } else {
-    print("bad.");
+    printLine("bad.");
 }
 
-for (var i = 0; i < 10; i = i + 1) {
-    printLine(i);
+class Hello {
+    greet() {
+        printLine("Hi!");
+        return "Hello again!";
+    }
 }
 
-print(clock());
+class HelloAgain < Hello {
+    greetAgain() {
+        printLine("Hi again!");
+    }
+}
 
-class Hello {}
-print(Hello());
+var hi = HelloAgain();
+hi.greet();
+hi.greetAgain();
