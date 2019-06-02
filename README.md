@@ -14,6 +14,7 @@ Kotlin.
 - Maximum function arguments are 16 instead of 8
 - 'print $obj' statement is replaced by print($obj) and printLine($obj)
   native functions
+- More native functions, see Interpreter class for a list of them
 
 ### Build/Run
 

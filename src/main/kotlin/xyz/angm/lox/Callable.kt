@@ -7,6 +7,15 @@ interface LoxCallable {
     fun call(interpreter: Interpreter, arguments: List<Any?>): Any?
 }
 
+class LoxNativeFunction(
+    private val name: String,
+    override val arity: Int,
+    private val call: (interpreter: Interpreter, arguments: List<Any?>) -> Any?
+) : LoxCallable {
+    override fun call(interpreter: Interpreter, arguments: List<Any?>) = call
+    override fun toString() = "<native func $name>"
+}
+
 class LoxFunction(
     private val declaration: Statement.Function,
     private val closure: Environment,

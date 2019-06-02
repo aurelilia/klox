@@ -1,6 +1,7 @@
 package xyz.angm.lox
 
 import xyz.angm.lox.TokenType.*
+import java.util.Scanner
 
 class Return(val value: Any?) : RuntimeException(null, null, false, false)
 
@@ -13,21 +14,12 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
     private val locals = HashMap<Expression, Int>()
 
     init {
-        globals.define("clock", object : LoxCallable {
-            override val arity = 0
-            override fun call(interpreter: Interpreter, arguments: List<Any?>) = System.currentTimeMillis() / 1000
-            override fun toString() = "<native func clock()>"
-        })
-        globals.define("print", object : LoxCallable {
-            override val arity = 1
-            override fun call(interpreter: Interpreter, arguments: List<Any?>) = System.out.print(stringify(arguments[0]))
-            override fun toString() = "<native func print()>"
-        })
-        globals.define("printLine", object : LoxCallable {
-            override val arity = 1
-            override fun call(interpreter: Interpreter, arguments: List<Any?>) = System.out.println(stringify(arguments[0]))
-            override fun toString() = "<native func printLine()>"
-        })
+        globals.define("clock", LoxNativeFunction("clock", 0) { _, _ -> System.currentTimeMillis() })
+        globals.define("print", LoxNativeFunction("print", 1) { _, arguments -> System.out.print(stringify(arguments[0])) })
+        globals.define("printLine", LoxNativeFunction("printLine", 1) { _, arguments -> System.out.println(stringify(arguments[0])) })
+
+        val scanner = Scanner(System.`in`)
+        globals.define("readLine", LoxNativeFunction("readLine", 0) { _, _ -> scanner.nextLine() })
     }
 
     fun interpret(statements: List<Statement>) {
