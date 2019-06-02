@@ -1,6 +1,6 @@
 package xyz.angm.lox
 
-class Environment(private val enclosingEnv: Environment? = null) {
+class Environment(val enclosingEnv: Environment? = null) {
 
     private val values = HashMap<String, Any?>()
 

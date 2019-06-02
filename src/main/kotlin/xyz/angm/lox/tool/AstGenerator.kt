@@ -21,6 +21,7 @@ fun main(args: Array<String>) {
             "Literal    : Any? value",
             "Logical    : Expression left, Token operator, Expression right",
             "Set        : Expression obj, Token name, Expression value",
+            "Super      : Token keyword, Token method",
             "This       : Token keyword",
             "Unary      : Token operator, Expression right",
             "Ternary    : Expression condition, Expression isTrue, Expression isFalse",

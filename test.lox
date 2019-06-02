@@ -13,6 +13,10 @@ if (num == 0 or num > 5) {
     printLine("bad.");
 }
 
+for (var i = 0; i < 10; i = i + 1) {
+    printLine(i);
+}
+
 class Hello {
     greet() {
         printLine("Hi!");
@@ -21,11 +25,11 @@ class Hello {
 }
 
 class HelloAgain < Hello {
-    greetAgain() {
+    greet() {
+        super.greet();
         printLine("Hi again!");
     }
 }
 
 var hi = HelloAgain();
 hi.greet();
-hi.greetAgain();

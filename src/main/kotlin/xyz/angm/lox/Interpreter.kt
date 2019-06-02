@@ -62,10 +62,18 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
         environment.define(statement.name.lexeme, null)
 
+        if (statement.superclass != null) {
+            environment = Environment(environment)
+            environment.define("super", superclass)
+        }
+
         val methods = HashMap<String, LoxFunction>()
         statement.methods.forEach { methods[it.name.lexeme] = LoxFunction(it, environment, it.name.lexeme == "init") }
 
         val lClass = LoxClass(statement.name.lexeme, superclass as? LoxClass, methods)
+
+        if (superclass != null) environment = environment.enclosingEnv!!
+
         environment.assign(statement.name, lClass)
     }
 
@@ -138,6 +146,15 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
         obj[expression.name] = value
         return value
+    }
+
+    override fun visitSuperExpression(expression: Expression.Super): Any? {
+        val distance = locals[expression]!!
+        val superclass = environment.getAt(distance, "super") as LoxClass
+        val obj = environment.getAt(distance - 1, "this") as LoxInstance
+
+        return superclass.findMethod(expression.method.lexeme)?.bind(obj)
+            ?: throw RuntimeError(expression.method, "Undefined property '${expression.method.lexeme}'.")
     }
 
     override fun visitThisExpression(expression: Expression.This) = lookUpVariable(expression.keyword, expression)

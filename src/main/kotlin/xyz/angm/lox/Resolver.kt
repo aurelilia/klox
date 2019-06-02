@@ -114,6 +114,14 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
         resolve(expression.obj)
     }
 
+    override fun visitSuperExpression(expression: Expression.Super) {
+        when (currentClass) {
+            ClassType.NONE -> Lox.error(expression.keyword, "Cannot use 'super' outside of a class.")
+            ClassType.CLASS -> Lox.error(expression.keyword, "Cannot use 'super' in a class with no superclass.")
+            ClassType.SUBCLASS -> resolveLocal(expression, expression.keyword)
+        }
+    }
+
     override fun visitTernaryExpression(expression: Expression.Ternary) {
         resolve(expression.condition)
         resolve(expression.isTrue)
@@ -153,7 +161,7 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
 
     private fun resolveLocal(expression: Expression, name: Token) {
         if (scopes.isEmpty()) return // 0..0 operator below would cause a OOB exception
-        for (i in scopes.size..0) {
+        for (i in (scopes.size - 1) downTo 0) {
             if (scopes[i].containsKey(name.lexeme)) {
                 interpreter.resolve(expression, scopes.size - 1 - i)
                 return

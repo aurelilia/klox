@@ -217,6 +217,13 @@ class Parser(private val tokens: List<Token>) {
             match(IDENTIFIER) -> Expression.Variable(previous())
             match(THIS) -> Expression.This(previous())
 
+            match(SUPER) -> {
+                val keyword = previous()
+                consume(DOT, "Expected '.' after 'super'.")
+                val method = consume(IDENTIFIER, "Expected superclass method name.")
+                Expression.Super(keyword, method)
+            }
+
             match(LEFT_PAREN) -> {
                 val expression = expression()
                 consume(RIGHT_PAREN, "Expected ')' after expression.")
