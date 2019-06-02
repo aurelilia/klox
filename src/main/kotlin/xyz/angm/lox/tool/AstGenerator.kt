@@ -16,9 +16,11 @@ fun main(args: Array<String>) {
             "Assign     : Token name, Expression value",
             "Binary     : Expression left, Token operator, Expression right",
             "Call       : Expression callee, Token paren, List<Expression> arguments",
+            "Get        : Expression obj, Token name",
             "Grouping   : Expression expression",
             "Literal    : Any? value",
             "Logical    : Expression left, Token operator, Expression right",
+            "Set        : Expression obj, Token name, Expression value",
             "Unary      : Token operator, Expression right",
             "Ternary    : Expression condition, Expression isTrue, Expression isFalse",
             "Variable   : Token name"

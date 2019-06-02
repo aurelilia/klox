@@ -60,6 +60,8 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
         expression.arguments.forEach(::resolve)
     }
 
+    override fun visitGetExpression(expression: Expression.Get) = resolve(expression.obj)
+
     override fun visitGroupingExpression(expression: Expression.Grouping) = resolve(expression.expression)
 
     override fun visitLiteralExpression(expression: Expression.Literal) = Unit
@@ -67,6 +69,11 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
     override fun visitLogicalExpression(expression: Expression.Logical) {
         resolve(expression.left)
         resolve(expression.right)
+    }
+
+    override fun visitSetExpression(expression: Expression.Set) {
+        resolve(expression.value)
+        resolve(expression.obj)
     }
 
     override fun visitTernaryExpression(expression: Expression.Ternary) {

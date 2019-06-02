@@ -39,5 +39,15 @@ class LoxClass(val name: String) : LoxCallable {
 }
 
 class LoxInstance(private val lClass: LoxClass) {
+
+    private val fields = HashMap<String, Any?>()
+
+    operator fun get(name: Token): Any? {
+        if (fields.containsKey(name.lexeme)) return fields[name.lexeme]
+        throw RuntimeError(name, "Undefined property ${name.lexeme}.")
+    }
+
+    operator fun set(name: Token, value: Any?) = fields.put(name.lexeme, value)
+
     override fun toString() = "${lClass.name} instance"
 }

@@ -144,8 +144,11 @@ class Parser(private val tokens: List<Token>) {
             val equals = previous()
             val value = assignment()
 
-            if (expression is Expression.Variable) return Expression.Assign(expression.name, value)
-            error(equals, "Invalid assignment target.")
+            when (expression) {
+                is Expression.Variable -> return Expression.Assign(expression.name, value)
+                is Expression.Get -> return Expression.Set(expression.obj, expression.name, value)
+                else -> error(equals, "Invalid assignment target.")
+            }
         }
         return expression
     }
@@ -185,6 +188,7 @@ class Parser(private val tokens: List<Token>) {
         var expression = primary()
         while (true) {
             if (match(LEFT_PAREN)) expression = finishCall(expression)
+            else if (match(DOT)) expression = Expression.Get(expression, consume(IDENTIFIER, "Expected property name after '.'."))
             else break
         }
         return expression

@@ -9,9 +9,11 @@ abstract class Expression {
         fun visitAssignExpression(expression: Assign): R
         fun visitBinaryExpression(expression: Binary): R
         fun visitCallExpression(expression: Call): R
+        fun visitGetExpression(expression: Get): R
         fun visitGroupingExpression(expression: Grouping): R
         fun visitLiteralExpression(expression: Literal): R
         fun visitLogicalExpression(expression: Logical): R
+        fun visitSetExpression(expression: Set): R
         fun visitUnaryExpression(expression: Unary): R
         fun visitTernaryExpression(expression: Ternary): R
         fun visitVariableExpression(expression: Variable): R
@@ -40,6 +42,13 @@ abstract class Expression {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitCallExpression(this)
     }
 
+    class Get(
+        val obj: Expression,
+        val name: Token
+    ) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitGetExpression(this)
+    }
+
     class Grouping(
         val expression: Expression
     ) : Expression() {
@@ -58,6 +67,14 @@ abstract class Expression {
         val right: Expression
     ) : Expression() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitLogicalExpression(this)
+    }
+
+    class Set(
+        val obj: Expression,
+        val name: Token,
+        val value: Expression
+    ) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitSetExpression(this)
     }
 
     class Unary(
