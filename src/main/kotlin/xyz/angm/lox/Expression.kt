@@ -14,6 +14,7 @@ abstract class Expression {
         fun visitLiteralExpression(expression: Literal): R
         fun visitLogicalExpression(expression: Logical): R
         fun visitSetExpression(expression: Set): R
+        fun visitThisExpression(expression: This): R
         fun visitUnaryExpression(expression: Unary): R
         fun visitTernaryExpression(expression: Ternary): R
         fun visitVariableExpression(expression: Variable): R
@@ -75,6 +76,12 @@ abstract class Expression {
         val value: Expression
     ) : Expression() {
         override fun <R> accept(visitor: Visitor<R>) = visitor.visitSetExpression(this)
+    }
+
+    class This(
+        val keyword: Token
+    ) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>) = visitor.visitThisExpression(this)
     }
 
     class Unary(

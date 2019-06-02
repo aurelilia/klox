@@ -213,6 +213,7 @@ class Parser(private val tokens: List<Token>) {
             match(NIL) -> Expression.Literal(null)
             match(NUMBER, STRING) -> Expression.Literal(previous().literal)
             match(IDENTIFIER) -> Expression.Variable(previous())
+            match(THIS) -> Expression.This(previous())
 
             match(LEFT_PAREN) -> {
                 val expression = expression()

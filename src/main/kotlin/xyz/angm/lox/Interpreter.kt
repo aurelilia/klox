@@ -137,6 +137,8 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
         return value
     }
 
+    override fun visitThisExpression(expression: Expression.This) = lookUpVariable(expression.keyword, expression)
+
     override fun visitLogicalExpression(expression: Expression.Logical): Any? {
         val left = evaluate(expression.left)
         return if ((expression.operator.type == OR && isTruthy(left)) || !isTruthy(left)) return left

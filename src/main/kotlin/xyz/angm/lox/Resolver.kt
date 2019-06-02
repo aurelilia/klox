@@ -7,10 +7,15 @@ enum class FunctionType {
     NONE, FUNCTION, METHOD
 }
 
+enum class ClassType {
+    NONE, CLASS
+}
+
 class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>, Statement.Visitor<Unit> {
 
     private val scopes = Stack<MutableMap<String, Boolean>>()
     private var currentFunction = FunctionType.NONE
+    private var currentClass = ClassType.NONE
 
     override fun visitBlockStatement(statement: Statement.Block) {
         beginScope()
@@ -19,9 +24,18 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
     }
 
     override fun visitClassStatement(statement: Statement.Class) {
+        val enclosingClass = currentClass
+        currentClass = ClassType.CLASS
+
         declare(statement.name)
+        beginScope()
+        scopes.peek()["this"] = true
+
         define(statement.name)
         statement.methods.forEach { resolveFunction(it, FunctionType.METHOD) }
+
+        endScope()
+        currentClass = enclosingClass
     }
 
     override fun visitExpressionStatement(statement: Statement.Expression) = resolve(statement.expression)
@@ -66,6 +80,11 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
     override fun visitGroupingExpression(expression: Expression.Grouping) = resolve(expression.expression)
 
     override fun visitLiteralExpression(expression: Expression.Literal) = Unit
+
+    override fun visitThisExpression(expression: Expression.This) {
+        if (currentClass == ClassType.NONE) Lox.error(expression.keyword, "Cannot use 'this' outside of a class.")
+        else resolveLocal(expression, expression.keyword)
+    }
 
     override fun visitLogicalExpression(expression: Expression.Logical) {
         resolve(expression.left)

@@ -26,6 +26,12 @@ class LoxFunction(
         }
     }
 
+    fun bind(instance: LoxInstance): LoxFunction {
+        val environment = Environment(closure)
+        environment.define("this", instance)
+        return LoxFunction(declaration, environment)
+    }
+
     override fun toString() = "<func ${declaration.name.lexeme}>"
 }
 
@@ -46,7 +52,7 @@ class LoxInstance(private val lClass: LoxClass) {
 
     operator fun get(name: Token): Any? {
         return if (fields.containsKey(name.lexeme)) fields[name.lexeme]
-        else lClass.findMethod(name.lexeme)
+        else lClass.findMethod(name.lexeme).bind(this)
             ?: throw RuntimeError(name, "Undefined property ${name.lexeme}.")
     }
 
