@@ -29,11 +29,13 @@ class LoxFunction(
     override fun toString() = "<func ${declaration.name.lexeme}>"
 }
 
-class LoxClass(val name: String) : LoxCallable {
+class LoxClass(val name: String, private val methods: MutableMap<String, LoxFunction>) : LoxCallable {
 
     override val arity = 0
 
     override fun call(interpreter: Interpreter, arguments: List<Any?>) = LoxInstance(this)
+
+    fun findMethod(name: String) = if (methods.containsKey(name)) methods[name] else null
 
     override fun toString() = name
 }
@@ -43,8 +45,9 @@ class LoxInstance(private val lClass: LoxClass) {
     private val fields = HashMap<String, Any?>()
 
     operator fun get(name: Token): Any? {
-        if (fields.containsKey(name.lexeme)) return fields[name.lexeme]
-        throw RuntimeError(name, "Undefined property ${name.lexeme}.")
+        return if (fields.containsKey(name.lexeme)) fields[name.lexeme]
+        else lClass.findMethod(name.lexeme)
+            ?: throw RuntimeError(name, "Undefined property ${name.lexeme}.")
     }
 
     operator fun set(name: Token, value: Any?) = fields.put(name.lexeme, value)

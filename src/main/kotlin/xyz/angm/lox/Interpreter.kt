@@ -58,7 +58,11 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
     override fun visitClassStatement(statement: Statement.Class) {
         environment.define(statement.name.lexeme, null)
-        val lClass = LoxClass(statement.name.lexeme)
+
+        val methods = HashMap<String, LoxFunction>()
+        statement.methods.forEach { methods[it.name.lexeme] = LoxFunction(it, environment) }
+
+        val lClass = LoxClass(statement.name.lexeme, methods)
         environment.assign(statement.name, lClass)
     }
 

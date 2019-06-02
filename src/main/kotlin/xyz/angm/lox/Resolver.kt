@@ -4,7 +4,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 enum class FunctionType {
-    NONE, FUNCTION
+    NONE, FUNCTION, METHOD
 }
 
 class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>, Statement.Visitor<Unit> {
@@ -21,6 +21,7 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
     override fun visitClassStatement(statement: Statement.Class) {
         declare(statement.name)
         define(statement.name)
+        statement.methods.forEach { resolveFunction(it, FunctionType.METHOD) }
     }
 
     override fun visitExpressionStatement(statement: Statement.Expression) = resolve(statement.expression)
