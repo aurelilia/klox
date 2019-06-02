@@ -4,7 +4,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 enum class FunctionType {
-    NONE, FUNCTION, METHOD
+    NONE, FUNCTION, INITIALIZER, METHOD
 }
 
 enum class ClassType {
@@ -32,7 +32,10 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
         scopes.peek()["this"] = true
 
         define(statement.name)
-        statement.methods.forEach { resolveFunction(it, FunctionType.METHOD) }
+        statement.methods.forEach {
+            val declaration = if (it.name.lexeme == "init") FunctionType.INITIALIZER else FunctionType.METHOD
+            resolveFunction(it, declaration)
+        }
 
         endScope()
         currentClass = enclosingClass
@@ -52,7 +55,11 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
         resolveFunction(statement, FunctionType.FUNCTION)
     }
 
-    override fun visitReturnStatement(statement: Statement.Return) = if (statement.value != null) resolve(statement.value) else Unit
+    override fun visitReturnStatement(statement: Statement.Return) {
+        statement.value ?: return
+        if (currentFunction == FunctionType.INITIALIZER) Lox.error(statement.keyword, "Cannot return a value from an initializer.")
+        resolve(statement.value)
+    }
 
     override fun visitVarStatement(statement: Statement.Var) {
         declare(statement.name)
