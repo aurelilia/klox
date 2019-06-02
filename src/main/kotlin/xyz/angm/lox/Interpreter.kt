@@ -126,10 +126,9 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
     }
 
     override fun visitSetExpression(expression: Expression.Set): Any? {
-        val obj = evaluate(expression.obj)
-        if (obj !is LoxInstance) throw RuntimeError(expression.name, "Only instances have properties.")
-
+        val obj = evaluate(expression.obj) as? LoxInstance ?: throw RuntimeError(expression.name, "Only instances have properties.")
         val value = evaluate(expression.value)
+
         obj[expression.name] = value
         return value
     }

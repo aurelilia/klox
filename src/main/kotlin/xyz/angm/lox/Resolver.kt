@@ -10,7 +10,7 @@ enum class FunctionType {
 class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>, Statement.Visitor<Unit> {
 
     private val scopes = Stack<MutableMap<String, Boolean>>()
-    private var currentFunction = FunctionType.NONE;
+    private var currentFunction = FunctionType.NONE
 
     override fun visitBlockStatement(statement: Statement.Block) {
         beginScope()
