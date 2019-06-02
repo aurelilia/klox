@@ -107,6 +107,7 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
     }
 
     private fun resolveLocal(expression: Expression, name: Token) {
+        if (scopes.isEmpty()) return // 0..0 operator below would cause a OOB exception
         for (i in scopes.size..0) {
             if (scopes[i].containsKey(name.lexeme)) {
                 interpreter.resolve(expression, scopes.size - 1 - i)
