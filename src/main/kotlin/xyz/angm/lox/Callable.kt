@@ -12,7 +12,7 @@ class LoxNativeFunction(
     override val arity: Int,
     private val call: (interpreter: Interpreter, arguments: List<Any?>) -> Any?
 ) : LoxCallable {
-    override fun call(interpreter: Interpreter, arguments: List<Any?>) = call
+    override fun call(interpreter: Interpreter, arguments: List<Any?>) = call.invoke(interpreter, arguments)
     override fun toString() = "<native func $name>"
 }
 
@@ -26,7 +26,7 @@ class LoxFunction(
 
     override fun call(interpreter: Interpreter, arguments: List<Any?>): Any? {
         val environment = Environment(closure)
-        for (i in 0 until declaration.params.size) environment.define(declaration.params[i].lexeme, arguments[i])
+        for (i in declaration.params.indices) environment.define(declaration.params[i].lexeme, arguments[i])
 
         try {
             interpreter.executeBlock(declaration.body, environment)
@@ -50,7 +50,7 @@ class LoxFunction(
 
 class LoxClass(
     val name: String,
-    val superclass: LoxClass?,
+    private val superclass: LoxClass?,
     private val methods: MutableMap<String, LoxFunction>
 ) : LoxCallable {
 

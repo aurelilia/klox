@@ -1,7 +1,6 @@
 package xyz.angm.lox
 
 import xyz.angm.lox.TokenType.*
-import java.util.Arrays.asList
 
 class Parser(private val tokens: List<Token>) {
 
@@ -115,13 +114,11 @@ class Parser(private val tokens: List<Token>) {
         var body = statement()
 
         if (increment != null) {
-            body = Statement.Block(asList<Statement>(
-                body, Statement.Expression(increment)
-            ))
+            body = Statement.Block(listOf(body, Statement.Expression(increment)))
         }
         body = Statement.While(condition, body)
 
-        return if (initializer != null) Statement.Block(asList<Statement>(initializer, body))
+        return if (initializer != null) Statement.Block(listOf(initializer, body))
         else body
     }
 
@@ -189,8 +186,8 @@ class Parser(private val tokens: List<Token>) {
     private fun call(): Expression {
         var expression = primary()
         while (true) {
-            if (match(LEFT_PAREN)) expression = finishCall(expression)
-            else if (match(DOT)) expression = Expression.Get(expression, consume(IDENTIFIER, "Expected property name after '.'."))
+            expression = if (match(LEFT_PAREN)) finishCall(expression)
+            else if (match(DOT)) Expression.Get(expression, consume(IDENTIFIER, "Expected property name after '.'."))
             else break
         }
         return expression
@@ -253,7 +250,7 @@ class Parser(private val tokens: List<Token>) {
         return previous()
     }
 
-    private fun check(type: TokenType) = if (isAtEnd()) false else peek().type == type
+    private fun check(type: TokenType) = !isAtEnd() && peek().type == type
 
     private fun peek() = tokens[current]
 

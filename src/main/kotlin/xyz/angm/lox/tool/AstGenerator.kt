@@ -1,18 +1,18 @@
 package xyz.angm.lox.tool
 
 import java.io.PrintWriter
-import java.util.Arrays.asList
+import kotlin.system.exitProcess
 
 
 fun main(args: Array<String>) {
     if (args.size != 1) {
         System.err.println("Usage: generate_ast <output directory>")
-        System.exit(1)
+        exitProcess(1)
     }
     val outputDir = args[0]
 
     defineAst(
-        outputDir, "Expression", asList(
+        outputDir, "Expression", listOf(
             "Assign     : Token name, Expression value",
             "Binary     : Expression left, Token operator, Expression right",
             "Call       : Expression callee, Token paren, List<Expression> arguments",
@@ -30,7 +30,7 @@ fun main(args: Array<String>) {
     )
 
     defineAst(
-        outputDir, "Statement", asList(
+        outputDir, "Statement", listOf(
             "Block      : List<Statement> statements",
             "Class      : Token name, xyz.angm.lox.Expression.Variable? superclass, List<Statement.Function> methods",
             "Expression : xyz.angm.lox.Expression expression",

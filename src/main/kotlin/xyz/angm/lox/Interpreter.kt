@@ -15,8 +15,8 @@ class Interpreter : Expression.Visitor<Any?>, Statement.Visitor<Unit> {
 
     init {
         globals.define("clock", LoxNativeFunction("clock", 0) { _, _ -> System.currentTimeMillis() })
-        globals.define("print", LoxNativeFunction("print", 1) { _, arguments -> System.out.print(stringify(arguments[0])) })
-        globals.define("printLine", LoxNativeFunction("printLine", 1) { _, arguments -> System.out.println(stringify(arguments[0])) })
+        globals.define("print", LoxNativeFunction("print", 1) { _, arguments -> print(stringify(arguments[0])) })
+        globals.define("printLine", LoxNativeFunction("printLine", 1) { _, arguments -> println(stringify(arguments[0])) })
 
         val scanner = Scanner(System.`in`)
         globals.define("readLine", LoxNativeFunction("readLine", 0) { _, _ -> scanner.nextLine() })
