@@ -1,11 +1,9 @@
 package xyz.angm.lox
 
-import xyz.angm.lox.ast.LoxFunction
-import xyz.angm.lox.ast.LoxRootNode
-import xyz.angm.lox.ast.expression.*
-import xyz.angm.lox.ast.statement.IfNode
-import xyz.angm.lox.ast.statement.ReturnNode
+import org.graalvm.polyglot.Context
+import org.graalvm.polyglot.Source
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.nio.file.Files
@@ -21,33 +19,12 @@ private var hadError = false
 private var hadRuntimeError = false
 
 fun main(args: Array<String>) {
-    // Print fib(40)
-    val fnbody = FunctionBodyNode(null)
-    val function = LoxFunction(LoxRootNode(fnbody))
-    val body = IfNode(
-        LessThanNodeGen.create(ReadArgumentNode(0), IntLiteralNode(2)),
-        ReturnNode(ReadArgumentNode(0)),
-        ReturnNode(
-            AddNodeGen.create(
-                CallNode(
-                    function,
-                    arrayOf(SubNodeGen.create(ReadArgumentNode(0), IntLiteralNode(2)))
-                ),
-                CallNode(
-                    function,
-                    arrayOf(SubNodeGen.create(ReadArgumentNode(0), IntLiteralNode(1)))
-                ),
-            )
-        )
-    )
-    fnbody.body = body
+    val source = Source.newBuilder(LOX, File(args[0])).build()
+    val context = Context.newBuilder(LOX).`in`(System.`in`).out(System.out).build();
+    println("== running on " + context.engine)
 
-    val callnode = CallNode(
-        function,
-        arrayOf(IntLiteralNode(40))
-    )
     val time = System.currentTimeMillis()
-    println(GraalVM.exec(callnode))
+    context.eval(source)
     println(System.currentTimeMillis() - time)
 }
 
