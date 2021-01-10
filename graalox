@@ -1,0 +1,13 @@
+#!/bin/sh
+
+gradle shadowJar
+
+java -ea \
+ --add-exports org.graalvm.truffle/com.oracle.truffle.api=ALL-UNNAMED \
+ --add-exports org.graalvm.truffle/com.oracle.truffle.api.nodes=ALL-UNNAMED \
+ --add-exports org.graalvm.truffle/com.oracle.truffle.api.dsl=ALL-UNNAMED \
+ --add-exports org.graalvm.truffle/com.oracle.truffle.api.profiles=ALL-UNNAMED \
+ --add-exports org.graalvm.truffle/com.oracle.truffle.api.exception=ALL-UNNAMED \
+ --add-exports org.graalvm.truffle/com.oracle.truffle.api.frame=ALL-UNNAMED \
+ -jar build/libs/klox-1.0-SNAPSHOT-all.jar \
+ $@

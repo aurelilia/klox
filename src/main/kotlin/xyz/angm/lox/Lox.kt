@@ -1,11 +1,15 @@
 package xyz.angm.lox
 
+import xyz.angm.lox.ast.LoxFunction
+import xyz.angm.lox.ast.LoxRootNode
+import xyz.angm.lox.ast.expression.*
+import xyz.angm.lox.ast.statement.IfNode
+import xyz.angm.lox.ast.statement.ReturnNode
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.system.exitProcess
 
 
 const val MAX_FUNCTION_ARGS = 16
@@ -17,16 +21,34 @@ private var hadError = false
 private var hadRuntimeError = false
 
 fun main(args: Array<String>) {
-    when (args.size) {
-        0 -> runPrompt()
-        1 -> runFile(args[0])
-        else -> {
-            println("Usage: klox [script]")
-            exitProcess(64)
-        }
-    }
-    if (hadError) exitProcess(65)
-    if (hadRuntimeError) exitProcess(70)
+    // Print fib(40)
+    val fnbody = FunctionBodyNode(null)
+    val function = LoxFunction(LoxRootNode(fnbody))
+    val body = IfNode(
+        LessThanNodeGen.create(ReadArgumentNode(0), IntLiteralNode(2)),
+        ReturnNode(ReadArgumentNode(0)),
+        ReturnNode(
+            AddNodeGen.create(
+                CallNode(
+                    function,
+                    arrayOf(SubNodeGen.create(ReadArgumentNode(0), IntLiteralNode(2)))
+                ),
+                CallNode(
+                    function,
+                    arrayOf(SubNodeGen.create(ReadArgumentNode(0), IntLiteralNode(1)))
+                ),
+            )
+        )
+    )
+    fnbody.body = body
+
+    val callnode = CallNode(
+        function,
+        arrayOf(IntLiteralNode(40))
+    )
+    val time = System.currentTimeMillis()
+    println(GraalVM.exec(callnode))
+    println(System.currentTimeMillis() - time)
 }
 
 fun runPrompt() {

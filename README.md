@@ -3,6 +3,8 @@
 An interpreter for [Lox](http://craftinginterpreters.com). Written in
 Kotlin.
 
+**Currently in progress of being rewritten for Graal/Truffle.**
+
 ### Notable differences to jLox
 
 - C-style multiline comments (/* ... */) implemented; can be nested

@@ -141,7 +141,7 @@ class Resolver(private val interpreter: Interpreter) : Expression.Visitor<Unit>,
         resolveLocal(expression, expression.name)
     }
 
-    fun resolve(statements: List<Statement>) = statements.forEach(::resolve)
+    fun resolve(statements: List<Statement>): Unit = statements.forEach(::resolve)
     private fun resolve(statement: Statement) = statement.accept(this)
     private fun resolve(expression: Expression) = expression.accept(this)
 
